@@ -1,0 +1,15 @@
+h3.name {
+	color: salmon;
+	margin: 0;
+}
+
+h3:visited {
+	color: initial;
+}
+
+.stat-container {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	/* padding: 1rem 0.6rem; */
+}

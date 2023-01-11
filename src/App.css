@@ -1,41 +1,81 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 2rem;
+	text-align: center;
+	background-color: #242424;
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
+	height: 6em;
+	padding: 1.5em;
+	will-change: filter;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+	filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+	filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
+	a:nth-of-type(2) .logo {
+		animation: logo-spin infinite 20s linear;
+	}
 }
 
 .read-the-docs {
-  color: #888;
+	color: #888;
 }
+
+.avatar {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	border: 3px solid black;
+}
+
+#container {
+	display: grid;
+	align-items: center;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 5px;
+}
+
+.card {
+	border-radius: 20px;
+	border: 1px white solid;
+	margin: 40px;
+	padding: 2em;
+	min-height: 356px !important;
+	/* height: 85%; */
+	background-color: rgb(90, 90, 90);
+	color: white;
+}
+
+.searchBar {
+	padding: 5px;
+	background-color: rgb(90, 90, 90);
+	border-radius: 20px;
+	border: 1px white solid;
+}
+
+.searchBar input {
+	background-color: white;
+	color: black;
+	margin: 10px;
+	border-radius: 10px;
+}
+
+/* .card h2 {
+	border: 1px white solid;
+} */
