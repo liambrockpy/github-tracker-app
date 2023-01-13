@@ -1,7 +1,7 @@
 import React from "react"
 // import "./style.css"
 
-const Card = ({ title, children, isProfile }) => {
+const Card = ({ title, isProfile, children }) => {
 	function renderMarkup(text) {
 		return { __html: text }
 	}

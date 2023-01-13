@@ -4,6 +4,7 @@
 	padding: 2rem;
 	text-align: center;
 	background-color: #242424;
+	width: 100%;
 }
 
 .logo {
@@ -16,21 +17,6 @@
 }
 .logo.react:hover {
 	filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-	from {
-		transform: rotate(0deg);
-	}
-	to {
-		transform: rotate(360deg);
-	}
-}
-
-@media (prefers-reduced-motion: no-preference) {
-	a:nth-of-type(2) .logo {
-		animation: logo-spin infinite 20s linear;
-	}
 }
 
 .read-the-docs {
@@ -69,6 +55,10 @@
 	border: 1px white solid;
 }
 
+.searchBar > label {
+	color: white;
+}
+
 .searchBar input {
 	background-color: white;
 	color: black;
@@ -79,3 +69,18 @@
 /* .card h2 {
 	border: 1px white solid;
 } */
+
+@keyframes logo-spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	a:nth-of-type(2) .logo {
+		animation: logo-spin infinite 20s linear;
+	}
+}

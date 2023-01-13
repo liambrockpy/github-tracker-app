@@ -3,88 +3,71 @@ import { useState } from "react"
 import "./App.css"
 import SearchBar from "./components/SearchBar"
 import { calcLanguages, calcCommits, calcTopRepo } from "./utils/dataFuncs"
-import { Octokit, App as OctokitApp } from "octokit"
 import Showdown from "showdown"
-import Languages from "./components/LanguagesData"
-import Card from "./components/Cards"
-import TopRepo from "./components/TopRepo"
-import Activity from "./components/Activity"
-import Created from "./components/Created"
+import LanguagesCard from "./components/LanguagesCard"
+import TopRepoCard from "./components/TopRepoCard"
+import ActivityCard from "./components/ActivityCard"
+import CreatedCard from "./components/CreatedCard"
+import ProfileCard from "./components/ProfileCard"
+import AvatarCard from "./components/AvatarCard"
+import Repos from "./components/Repos"
 
 const converter = new Showdown.Converter()
 
 function App() {
-	const [langs, setLangs] = useState(null)
 	const [user, setUser] = useState(null)
 
-	// const []
-
 	const getUserInfo = async (user) => {
-		const userInfo = await axios.get(`https://api.github.com/users/${user}`)
-		// username: userInfo.data.login, avatar: userInfo.data.avatar_url
-		console.log(userInfo.data)
+		const githubApi = `https://api.github.com/users`
 
-		const repoInfo = await axios.get(
-			`https://api.github.com/users/${user}/repos`
+		const { data: userInfo } = await axios.get(`${githubApi}/${user}`)
+		const { data: reposInfoArr } = await axios.get(`${githubApi}/${user}/repos`)
+		const { data: publicEventsArr } = await axios.get(
+			`${githubApi}/${user}/events/public`
 		)
+		// console.log(userInfo)
+		console.log(reposInfoArr)
 
-		// console.log(repoInfo)
+		// * Most recent activity
+		const lastActivity = publicEventsArr[0]
 
-		// Number of Languages used
-		const languages = calcLanguages(repoInfo.data.map((repo) => repo.language))
+		// * Number of Languages used
+		const languages = calcLanguages(reposInfoArr.map((repo) => repo.language))
 
-		const text = await axios
+		// * Profile readme
+		let convertedReadMe = null
+		await axios
 			.get(`https://raw.githubusercontent.com/${user}/${user}/main/README.md`)
-			.then()
+			.then(({ data }) => (convertedReadMe = converter.makeHtml(data)))
 			.catch((err) => {
-				return null
+				console.warn(err)
 			})
 
-		let convertedReadMe = null
-		// if user does not have a profile README skip
-		text
-			? (convertedReadMe = converter.makeHtml(text.data))
-			: (convertedReadMe = null)
-
-		// Total Commit Count
-		// const repoCommits = repoInfo.data.map(
+		// * Total Commit Count
+		// ! Not used due to rate limits
+		// const repoCommits = reposInfoArr.map(
 		// 	(n) => n.commits_url.split("{/sha}")[0]
 		// )
 		// const totalCommits = calcCommits(
 		// 	await axios.all(repoCommits.map((url) => axios.get(url)))
 		// )
 
-		//top repo
-		const top = calcTopRepo(repoInfo.data)
+		// * Top repo (stargazers)
+		const top = calcTopRepo(reposInfoArr)
 		// console.log("calc: ", top)
 
-		const publicEvents = await axios.get(
-			`https://api.github.com/users/${user}/events/public`
-		)
-		const lastActivity = publicEvents.data[0]
-
 		setUser({
-			name: userInfo.data.login,
-			avatar: userInfo.data.avatar_url,
-			bio: userInfo.data.bio,
-			blog: userInfo.data.blog,
-			// commits: totalCommits,
+			name: userInfo.login,
+			avatar: userInfo.avatar_url,
+			bio: userInfo.bio,
+			blog: userInfo.blog,
 			languages: languages,
 			topRepo: top,
-			created: userInfo.data.created_at,
+			created: userInfo.created_at,
 			lastActivity: lastActivity,
 			profile: convertedReadMe,
+			repos: reposInfoArr,
 		})
-
-		// const octokit = new Octokit({
-		// 	auth: "x",
-		// })
-
-		// Most Collabs with? Does not work for all users, only user assigned to auth token
-		// const collab = await octokit.request(
-		// 	"GET /repos/JLP2000/preVent/collaborators"
-		// )
-		// console.log(collab)
 	}
 
 	const onSubmitHandler = (value) => {
@@ -97,40 +80,24 @@ function App() {
 
 			{user && (
 				<>
-					<Card title={user.name}>
-						<img src={user.avatar} alt="User Avatar" className="avatar" />
-						{user.bio ? <p>{user.bio}</p> : void 0}
-						{user.blog ? <a href={user.blog}>{user.blog}</a> : void 0}
-					</Card>
-					{user.profile && (
-						<Card title={"Profile Introduction"} isProfile={true}>
-							{user.profile}
-						</Card>
-					)}
+					<AvatarCard
+						name={user.name}
+						avatar={user.avatar}
+						bio={user.bio}
+						blog={user.blog}
+					/>
+
+					{user.profile && <ProfileCard profile={user.profile} />}
+
+					{user.repos && <Repos data={user.repos} />}
 					<div id="container">
-						{user.topRepo && (
-							<Card title={"Top Repository"}>
-								<TopRepo data={user.topRepo} />
-							</Card>
-						)}
-						{user.languages && (
-							<Card title={"Languages"}>
-								<Languages data={user.languages} />
-							</Card>
-						)}
-						{user.created && (
-							<Card title={"Github Created"}>
-								<Created data={user.created} />
-							</Card>
-						)}
-						{user.lastActivity && (
-							<Card title={"Last Active"}>
-								<Activity data={user.lastActivity} />
-							</Card>
-						)}
-						{/* <Card title={"Total Commits"}>
-								<h3>{user.commits}</h3>
-							</Card> */}
+						{user.topRepo && <TopRepoCard data={user.topRepo} />}
+
+						{user.languages && <LanguagesCard data={user.languages} />}
+
+						<CreatedCard data={user.created} />
+
+						{user.lastActivity && <ActivityCard data={user.lastActivity} />}
 					</div>
 				</>
 			)}
